@@ -65,12 +65,14 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       if (!fs.existsSync("uploads")) {
         fs.mkdirSync("uploads");
       }
-      // write the svg to the tmp directory
-      fs.writeFileSync(`uploads/${fileName}.svg`, image);
 
-      await sharp(`uploads/${fileName}.svg`)
+      
+      // write the svg to the tmp directory
+      fs.writeFileSync(`/tmp/${fileName}.svg`, image);
+
+      await sharp(`/tmp/${fileName}.svg`)
         .png()
-        .toFile(`uploads/${fileName}.png`)
+        .toFile(`/tmp/${fileName}.png`)
         // @ts-ignore
         .then(function (info) {
           console.log("sharp info", info);
@@ -81,7 +83,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
         });
 
       async function uploadImage() {
-        const imgBuffer = fs.readFileSync(`uploads/${fileName}.png`);
+        const imgBuffer = fs.readFileSync(`/tmp/${fileName}.png`);
         const imgMetaplexFile = toMetaplexFile(imgBuffer, fileName);
 
         const imgUri = await METAPLEX.storage().upload(imgMetaplexFile);
