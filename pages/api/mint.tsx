@@ -1,6 +1,26 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Helius } from "helius-sdk";
 import { v4 as uuidv4 } from "uuid";
+import { WrapperConnection } from "../../ReadApi/WrapperConnection";
+import {
+  Keypair,
+  LAMPORTS_PER_SOL,
+  clusterApiUrl,
+  PublicKey,
+} from "@solana/web3.js";
+// import {
+//   loadKeypairFromFile,
+//   loadOrGenerateKeypair,
+//   numberFormatter,
+//   printConsoleSeparator,
+//   savePublicKeyToFile,
+// } from "@/utils/helpers";
+import {
+  Metaplex,
+  keypairIdentity,
+  bundlrStorage,
+  toMetaplexFile,
+} from "@metaplex-foundation/js";
 
 export type MakeTransactionInputData = {
   account: string;
@@ -15,9 +35,31 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
   //Handle POST requests to issue a coupon
   if (req.method === "POST") {
     try {
+      console.log('triggered')
       const fs = require("fs");
       const sharp = require("sharp");
       const fileName = uuidv4();
+      console.log('wtff')
+      const privateKey = process.env.NEXT_PUBLIC_WALLET_PRIVATE_KEY;
+      console.log('grabbed private key')
+      const keyfileBytes = await JSON.parse(privateKey!);
+      // // parse the loaded secretKey into a valid keypair
+      const payer = Keypair.fromSecretKey(Uint8Array.from(keyfileBytes!));
+      console.log('payer', payer.publicKey.toBase58())
+      const CLUSTER_URL = process.env.RPC_URL || clusterApiUrl("mainnet-beta"); // provide a default value for RPC_URL
+      // create a new rpc connection, using the ReadApi wrapper
+      const connection = new WrapperConnection(CLUSTER_URL, "confirmed");
+      const METAPLEX = Metaplex.make(connection)
+        .use(keypairIdentity(payer))
+        .use(
+          bundlrStorage({
+            address: "https://node1.irys.xyz",
+            providerUrl: CLUSTER_URL,
+            timeout: 60000,
+          }),
+        );
+
+      console.log('connection made')
       const { image, firstName, lastName, jobTitle, email, phone, website, airdropTo, creatorAddress } = req.body;
       
       fs.writeFileSync(`uploads/${fileName}.svg`, image);
@@ -33,6 +75,18 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
         .catch(function (err) {
           console.log("sharp err", err);
         });
+
+      async function uploadImage() {
+        const imgBuffer = fs.readFileSync(`uploads/${fileName}.png`);
+        const imgMetaplexFile = toMetaplexFile(imgBuffer, fileName);
+
+        const imgUri = await METAPLEX.storage().upload(imgMetaplexFile);
+        console.log(`   Image URI:`, imgUri);
+
+        return imgUri;
+      }
+
+      const imageURL = await uploadImage();
 
       async function run() {
         const helius = new Helius(process.env.NEXT_PUBLIC_HELIUS_KEY!);
@@ -68,8 +122,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
             },
           ],
           externalUrl: "https://www.swissDAO.space",
-          imagePath: `/Users/matt/Desktop/swissDAO_Github/solana-biz-cards/uploads/${fileName}.png`,
-          walletPrivateKey: process.env.NEXT_PUBLIC_WALLET_PRIVATE_KEY!,
+          imageUrl: imageURL,
         });
 
         console.log(response);

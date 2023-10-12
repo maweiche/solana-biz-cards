@@ -10,7 +10,7 @@
     "prettier": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "dependencies": {
-    "@metaplex-foundation/js": "^0.19.4",
+    "@metaplex-foundation/js": "^0.19.5",
     "@metaplex-foundation/mpl-bubblegum": "^0.7.0",
     "@metaplex-foundation/mpl-token-metadata": "^2.13.0",
     "@solana/pay": "^0.2.5",
