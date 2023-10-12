@@ -72,10 +72,18 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
 
       await sharp(`/tmp/${fileName}.svg`)
         .png()
-        .toFile(`/tmp/${fileName}.png`)
+        .resize(500, 500)
+        .toFile(
+          `/tmp/${fileName}.png`,
+        )
         // @ts-ignore
         .then(function (info) {
           console.log("sharp info", info);
+          // console log image size in megabytes
+          console.log(
+            "sharp info size",
+            info.size / 1000000 + "MB",
+          );
         })
         // @ts-ignore
         .catch(function (err) {
