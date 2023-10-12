@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { toast } from "react-toastify";
 const Page: React.FC = () => {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -10,17 +9,7 @@ const Page: React.FC = () => {
   const [website, setWebsite] = useState<string>("");
   const [airdropTo, setAirdropTo] = useState<string>("");
   const [creatorAddress, setCreatorAddress] = useState<string>("");
-  const toastifySuccess = (message: string) => {
-    toast.success(message, {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-    });
-  };
+
   async function convertAndSubmit() {
     const image = document.getElementById("svg-container");
     // convert image into a svg string
@@ -52,8 +41,6 @@ const Page: React.FC = () => {
     console.log("response_status", response_status);
     if (response_status === 200) {
       console.log("business card minted");
-      const response = await res.json();
-      toastifySuccess(`https://xray.helius.xyz/tx/${response.signature}?network=mainnet`);
     }
   }
 

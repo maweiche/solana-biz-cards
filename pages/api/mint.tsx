@@ -149,7 +149,6 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       //   return status: success and the txSignature
       return res.status(200).json({
         status: "success",
-        signature: response.result.signature
       });
     } catch (error) {
       console.log(error);
