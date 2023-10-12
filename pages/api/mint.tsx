@@ -61,7 +61,11 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
 
       console.log('connection made')
       const { image, firstName, lastName, jobTitle, email, phone, website, airdropTo, creatorAddress } = req.body;
-      
+      // create tmp directory to write to on production
+      if (!fs.existsSync("uploads")) {
+        fs.mkdirSync("uploads");
+      }
+      // write the svg to the tmp directory
       fs.writeFileSync(`uploads/${fileName}.svg`, image);
 
       await sharp(`uploads/${fileName}.svg`)
