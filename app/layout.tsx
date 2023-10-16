@@ -11,15 +11,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html 
+      lang="en" 
+      className="bg-slate-950 flex flex-col items-center justify-center"
+      style={{ width: "100vw", justifyContent: "center", alignContent:"center" }}
+    >
       <body>
-        {/* make background black */}
-        <main
-          className="min-h-screen 
-          bg-slate-950
-          text-white
-        flex flex-col items-center"
-        >
+        <main>
           {children}
         </main>
       </body>
