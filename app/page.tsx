@@ -67,7 +67,7 @@ const Page: React.FC = () => {
   const renderForm = () => {
     return (
       <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 items-center justify-center">
-        <div className="mb-2">
+        <div className="mb-2 sm:max-w-sm sm:mx-auto">
           <label
             className="block text-gray-700 text-sm font-bold"
             htmlFor="firstName"
@@ -75,7 +75,7 @@ const Page: React.FC = () => {
             First Name
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight w-full"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight sm:max-w-sm sm:mx-auto"
             style={firstName ? {} : { border: "1px solid red" }}
             id="firstName"
             type="text"
@@ -206,7 +206,16 @@ const Page: React.FC = () => {
 
   return (
     <div
-      className="flex flex-col items-center justify-center w-full"
+      style={{
+        width: "100vw",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        alignContent: "center",
+        overflowX: "hidden",
+        backgroundColor: "black",
+      }}
     >
       <ToastContainer
         position="top-right"
