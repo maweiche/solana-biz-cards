@@ -65,17 +65,16 @@ const Page: React.FC = () => {
 
   const renderForm = () => {
     return (
-      // create a tailwind styled form
-      <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <div className="mb-4">
+      <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 sm:text-left sm:max-w-sm sm:mx-auto">
+        <div className="mb-2 sm:max-w-sm sm:mx-auto">
           <label
-            className="block text-gray-700 text-sm font-bold mb-2"
+            className="block text-gray-700 text-sm font-bold"
             htmlFor="firstName"
           >
             First Name
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight sm:max-w-sm sm:mx-auto"
             style={firstName ? {} : { border: "1px solid red" }}
             id="firstName"
             type="text"
@@ -84,15 +83,15 @@ const Page: React.FC = () => {
             onChange={(e) => setFirstName(e.target.value)}
           />
         </div>
-        <div className="mb-6">
+        <div className="mb-2 sm:max-w-sm sm:mx-auto">
           <label
-            className="block text-gray-700 text-sm font-bold mb-2"
+            className="block text-gray-700 text-sm font-bold"
             htmlFor="lastName"
           >
             Last Name
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
             style={lastName ? {} : { border: "1px solid red" }}
             id="lastName"
             type="text"
@@ -102,13 +101,13 @@ const Page: React.FC = () => {
           />
 
           <label
-            className="block text-gray-700 text-sm font-bold mb-2"
+            className="block text-gray-700 text-sm font-bold"
             htmlFor="jobTitle"
           >
             Job Title
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
             style={jobTitle ? {} : { border: "1px solid red" }}
             id="jobTitle"
             type="text"
@@ -118,15 +117,15 @@ const Page: React.FC = () => {
           />
         </div>
 
-        <div className="mb-6">
+        <div className="mb-2 sm:max-w-sm sm:mx-auto">
           <label
-            className="block text-gray-700 text-sm font-bold mb-2"
+            className="block text-gray-700 text-sm font-bold"
             htmlFor="phone"
           >
             Phone
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
             // if there is no phone number give the style a red border
             style={phone ? {} : { border: "1px solid red" }}
             id="phone"
@@ -137,13 +136,13 @@ const Page: React.FC = () => {
           />
 
           <label
-            className="block text-gray-700 text-sm font-bold mb-2"
+            className="block text-gray-700 text-sm font-bold"
             htmlFor="email"
           >
             Email
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
             style={email ? {} : { border: "1px solid red" }}
             id="email"
             type="text"
@@ -153,13 +152,13 @@ const Page: React.FC = () => {
           />
 
           <label
-            className="block text-gray-700 text-sm font-bold mb-2"
+            className="block text-gray-700 text-sm font-bold"
             htmlFor="email"
           >
             Website
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
             style={website ? {} : { border: "1px solid red" }}
             id="website"
             type="text"
@@ -221,7 +220,8 @@ const Page: React.FC = () => {
       <div
         // give dive small white border
         className="border-2 border-white"
-        style={{ width: "660px", height: "660px" }}
+        // if screen is small give the div a smaller width
+        style={{ width: "660px", height: "660px", overflow: "hidden" }}
       >
         <svg
           id="svg-container"
