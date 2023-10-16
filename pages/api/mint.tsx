@@ -23,13 +23,13 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
   //Handle POST requests to issue a coupon
   if (req.method === "POST") {
     try {
-      console.log('triggered')
+      console.log("triggered");
       const fs = require("fs");
-      
+
       const fileName = uuidv4();
-      console.log('wtff')
+      console.log("wtff");
       const privateKeySecret = process.env.NEXT_PUBLIC_WALLET_PRIVATE_KEY;
-      console.log('grabbed private key')
+      console.log("grabbed private key");
       // const keyfileBytes = await JSON.parse(privateKeySecret!);
       // // parse the loaded secretKey into a valid keypair
       // const payer = Keypair.fromSecretKey(Uint8Array.from(keyfileBytes!));
@@ -47,14 +47,22 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       //     }),
       //   );
 
-      
-      const { image, firstName, lastName, jobTitle, email, phone, website, airdropTo, creatorAddress } = req.body;
+      const {
+        image,
+        firstName,
+        lastName,
+        jobTitle,
+        email,
+        phone,
+        website,
+        airdropTo,
+        creatorAddress,
+      } = req.body;
       // create tmp directory to write to on production
       // if (!fs.existsSync("uploads")) {
       //   fs.mkdirSync("uploads");
       // }
 
-      
       // // write the svg to the tmp directory
       // fs.writeFileSync(`/tmp/${fileName}.svg`, image);
 
@@ -82,14 +90,14 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
         const providerUrl = CLUSTER_URL;
         const token = "solana";
         const privateKey = privateKeySecret;
-        
+
         const irys = new Irys({
           url, // URL of the node you want to connect to
           token, // Token used for payment
           key: privateKey, // ETH or SOL private key
           // config: { providerUrl: providerUrl }, // Optional provider URL, only required when using Devnet
         });
-        console.log('connection made')
+        console.log("connection made");
         return irys;
       };
 
@@ -105,36 +113,38 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
         // console.log('irys', irys)
         // write the image to the vercel tmp directory
         fs.writeFileSync(`/tmp/${fileName}.svg`, image);
-        console.log('wrote svg file')
+        console.log("wrote svg file");
         // convert the svg to png with sharp
-        await sharp(
-          `/tmp/${fileName}.svg`
-        )
+        await sharp(`/tmp/${fileName}.svg`)
           .resize(500, 500)
           .png()
           .toFile(`/tmp/${fileName}.png`)
           // @ts-ignore
-          .then((data) => 
-            console.log('data', data)
-          )
+          .then((data) => console.log("data", data))
           // @ts-ignore
           .catch((err) => console.log(err));
-     
+
         const fileToUpload = `/tmp/${fileName}.png`;
         const token = "solana";
         // Get size of file
         const { size } = await fs.promises.stat(fileToUpload);
         // Get cost to upload "size" bytes
         const price = await irys.getPrice(size);
-        console.log(`Uploading ${size} bytes costs ${irys.utils.fromAtomic(price)} ${token}`);
+        console.log(
+          `Uploading ${size} bytes costs ${irys.utils.fromAtomic(
+            price,
+          )} ${token}`,
+        );
         // Fund the node
         await irys.fund(price);
-       
+
         // Upload metadata
         try {
           const response = await irys.uploadFile(fileToUpload);
-          
-          console.log(`File uploaded ==> https://gateway.irys.xyz/${response.id}`);
+
+          console.log(
+            `File uploaded ==> https://gateway.irys.xyz/${response.id}`,
+          );
           return `https://gateway.irys.xyz/${response.id}`;
         } catch (e) {
           console.log("Error uploading file ", e);
@@ -150,106 +160,63 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       const url = process.env.NEXT_PUBLIC_RPC_URL!;
       const mintCompressedNft = async () => {
         const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                jsonrpc: '2.0',
-                id: 'helius-test',
-                method: 'mintCompressedNft',
-                params: {
-                    name: "Business Card",
-                    symbol: 'swissDAO',
-                    owner: airdropTo,
-                    description: "A business card courtesy of swissDAO",
-                    attributes: [
-                      {
-                        trait_type: "Name",
-                        value: `${firstName} ${lastName}`,
-                      },
-                      {
-                        trait_type: "Job Title",
-                        value: jobTitle,
-                      },
-                      {
-                        trait_type: "Email",
-                        value: email,
-                      },
-                      {
-                        trait_type: "Phone",
-                        value: phone,
-                      },
-                      {
-                        trait_type: "Website",
-                        value: website,
-                      },
-                      {
-                        trait_type: "Creator Address",
-                        value: creatorAddress,
-                      },
-                    ],
-                    imageUrl:
-                        image_url,
-                    externalUrl: 'https://www.swissDAO.space',
-                    sellerFeeBasisPoints: 6900,
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            jsonrpc: "2.0",
+            id: "helius-test",
+            method: "mintCompressedNft",
+            params: {
+              name: "Business Card",
+              symbol: "swissDAO",
+              owner: airdropTo,
+              description: "A business card courtesy of swissDAO",
+              attributes: [
+                {
+                  trait_type: "Name",
+                  value: `${firstName} ${lastName}`,
                 },
-            }),
+                {
+                  trait_type: "Job Title",
+                  value: jobTitle,
+                },
+                {
+                  trait_type: "Email",
+                  value: email,
+                },
+                {
+                  trait_type: "Phone",
+                  value: phone,
+                },
+                {
+                  trait_type: "Website",
+                  value: website,
+                },
+                {
+                  trait_type: "Creator Address",
+                  value: creatorAddress,
+                },
+              ],
+              imageUrl: image_url,
+              externalUrl: "https://www.swissDAO.space",
+              sellerFeeBasisPoints: 6900,
+            },
+          }),
         });
-        // console.log('minted')
-        // const { result } = await response.json();
-        // console.log('Minted asset: ', result.assetId);
+        console.log("minted");
+        const { result } = await response.json();
+        console.log("Minted asset: ", result.assetId);
 
-        // return result;
-    };
+        return result;
+      };
 
-      // async function run() {
-      //   const helius = new Helius(process.env.NEXT_PUBLIC_HELIUS_KEY!);
-      //   const response = await helius.mintCompressedNft({
-      //     name: "Business Card",
-      //     symbol: "swissDAO",
-      //     owner: airdropTo,
-      //     description: "A business card courtesy of swissDAO",
-      //     attributes: [
-      //       {
-      //         trait_type: "Name",
-      //         value: `${firstName} ${lastName}`,
-      //       },
-      //       {
-      //         trait_type: "Job Title",
-      //         value: jobTitle,
-      //       },
-      //       {
-      //         trait_type: "Email",
-      //         value: email,
-      //       },
-      //       {
-      //         trait_type: "Phone",
-      //         value: phone,
-      //       },
-      //       {
-      //         trait_type: "Website",
-      //         value: website,
-      //       },
-      //       {
-      //         trait_type: "Creator Address",
-      //         value: creatorAddress,
-      //       },
-      //     ],
-      //     externalUrl: "https://www.swissDAO.space",
-      //     imageUrl: image_url,
-      //   });
-
-      //   console.log("minted", response);
-      //   return response;
-      // }
-      // const response = await run();
       const response = await mintCompressedNft();
-      // when complete return a 200 response with the assetId from Helius
       return res.status(200).json({
         status: "success",
-        // assetId: response.assetId,
-        // transaction: response.transaction,
+        assetId: response.assetId,
+        transaction: response.transaction,
       });
     } catch (error) {
       console.log(error);
