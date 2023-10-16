@@ -1,5 +1,18 @@
 "use client";
 import { useState } from "react";
+import {
+  Metaplex,
+  keypairIdentity,
+  bundlrStorage,
+  toMetaplexFile,
+} from "@metaplex-foundation/js";
+import { WrapperConnection } from "../ReadApi/WrapperConnection";
+import {
+  Keypair,
+  LAMPORTS_PER_SOL,
+  clusterApiUrl,
+  PublicKey,
+} from "@solana/web3.js";
 const Page: React.FC = () => {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -9,12 +22,42 @@ const Page: React.FC = () => {
   const [website, setWebsite] = useState<string>("");
   const [airdropTo, setAirdropTo] = useState<string>("");
   const [creatorAddress, setCreatorAddress] = useState<string>("");
+  const privateKeySecret = process.env.NEXT_PUBLIC_WALLET_PRIVATE_KEY;
+  // const keyfileBytes = JSON.parse(privateKey!);
+  // // parse the loaded secretKey into a valid keypair
+  // const payer = Keypair.fromSecretKey(Uint8Array.from(keyfileBytes!));
+  const CLUSTER_URL = "https://api.mainnet-beta.solana.com"; // provide a default value for RPC_URL
+  // create a new rpc connection, using the ReadApi wrapper
+  const connection = new WrapperConnection(CLUSTER_URL, "confirmed");
+  // const METAPLEX = Metaplex.make(connection)
+  //   .use(keypairIdentity(payer))
+  //   .use(
+  //     bundlrStorage({
+  //       address: "https://node1.irys.xyz",
+  //       providerUrl: CLUSTER_URL,
+  //       timeout: 60000,
+  //     }),
+  //   );
+  async function uploadImage() {
+    try{
+      const image = document.getElementById("svg-container");
+      // convert image into a svg string
+      const svg = new XMLSerializer().serializeToString(image!);
+
+      return svg;
+    }
+    catch(e){
+      console.log('error uploading image', e)
+    }
+  }
 
   async function convertAndSubmit() {
     const image = document.getElementById("svg-container");
     // convert image into a svg string
     const svg = new XMLSerializer().serializeToString(image!);
+    
 
+    const image_file = await uploadImage();
     console.log("minting business card");
 
     const res = await fetch("/api/mint", {
@@ -23,7 +66,7 @@ const Page: React.FC = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        image: svg,
+        image: image_file,
         firstName: firstName,
         lastName: lastName,
         jobTitle: jobTitle,
@@ -41,7 +84,10 @@ const Page: React.FC = () => {
     console.log("response_status", response_status);
     if (response_status === 200) {
       console.log("business card minted");
+    } else if (response_status === 500) {
+      console.log("error minting business card");
     }
+
   }
 
   const renderForm = () => {

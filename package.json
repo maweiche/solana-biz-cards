@@ -10,6 +10,7 @@
     "prettier": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "dependencies": {
+    "@irys/sdk": "^0.0.3",
     "@metaplex-foundation/js": "^0.19.5",
     "@metaplex-foundation/mpl-bubblegum": "^0.7.0",
     "@metaplex-foundation/mpl-token-metadata": "^2.13.0",

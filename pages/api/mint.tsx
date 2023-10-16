@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Helius } from "helius-sdk";
 import { v4 as uuidv4 } from "uuid";
+import Irys from "@irys/sdk";
 import { WrapperConnection } from "../../ReadApi/WrapperConnection";
 import {
   Keypair,
@@ -8,19 +9,6 @@ import {
   clusterApiUrl,
   PublicKey,
 } from "@solana/web3.js";
-// import {
-//   loadKeypairFromFile,
-//   loadOrGenerateKeypair,
-//   numberFormatter,
-//   printConsoleSeparator,
-//   savePublicKeyToFile,
-// } from "@/utils/helpers";
-import {
-  Metaplex,
-  keypairIdentity,
-  bundlrStorage,
-  toMetaplexFile,
-} from "@metaplex-foundation/js";
 
 export type MakeTransactionInputData = {
   account: string;
@@ -40,67 +28,128 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       const sharp = require("sharp");
       const fileName = uuidv4();
       console.log('wtff')
-      const privateKey = process.env.NEXT_PUBLIC_WALLET_PRIVATE_KEY;
+      const privateKeySecret = process.env.NEXT_PUBLIC_WALLET_PRIVATE_KEY;
       console.log('grabbed private key')
-      const keyfileBytes = await JSON.parse(privateKey!);
+      // const keyfileBytes = await JSON.parse(privateKeySecret!);
       // // parse the loaded secretKey into a valid keypair
-      const payer = Keypair.fromSecretKey(Uint8Array.from(keyfileBytes!));
-      console.log('payer', payer.publicKey.toBase58())
+      // const payer = Keypair.fromSecretKey(Uint8Array.from(keyfileBytes!));
+      // console.log('payer', payer.publicKey.toBase58())
       const CLUSTER_URL = process.env.RPC_URL || clusterApiUrl("mainnet-beta"); // provide a default value for RPC_URL
       // create a new rpc connection, using the ReadApi wrapper
       const connection = new WrapperConnection(CLUSTER_URL, "confirmed");
-      const METAPLEX = Metaplex.make(connection)
-        .use(keypairIdentity(payer))
-        .use(
-          bundlrStorage({
-            address: "https://node1.irys.xyz",
-            providerUrl: CLUSTER_URL,
-            timeout: 60000,
-          }),
-        );
-
-      console.log('connection made')
-      const { image, firstName, lastName, jobTitle, email, phone, website, airdropTo, creatorAddress } = req.body;
-      // create tmp directory to write to on production
-      if (!fs.existsSync("uploads")) {
-        fs.mkdirSync("uploads");
-      }
+      // const METAPLEX = Metaplex.make(connection)
+      //   .use(keypairIdentity(payer))
+      //   .use(
+      //     bundlrStorage({
+      //       address: "https://devnet.bundlr.network",
+      //       providerUrl: CLUSTER_URL,
+      //       timeout: 60000,
+      //     }),
+      //   );
 
       
-      // write the svg to the tmp directory
-      fs.writeFileSync(`/tmp/${fileName}.svg`, image);
+      const { image, firstName, lastName, jobTitle, email, phone, website, airdropTo, creatorAddress } = req.body;
+      // create tmp directory to write to on production
+      // if (!fs.existsSync("uploads")) {
+      //   fs.mkdirSync("uploads");
+      // }
 
-      await sharp(`/tmp/${fileName}.svg`)
-        .png()
-        .resize(500, 500)
-        .toFile(
-          `/tmp/${fileName}.png`,
-        )
-        // @ts-ignore
-        .then(function (info) {
-          console.log("sharp info", info);
-          // console log image size in megabytes
-          console.log(
-            "sharp info size",
-            info.size / 1000000 + "MB",
-          );
-        })
-        // @ts-ignore
-        .catch(function (err) {
-          console.log("sharp err", err);
+      
+      // // write the svg to the tmp directory
+      // fs.writeFileSync(`/tmp/${fileName}.svg`, image);
+
+      // await sharp(`/tmp/${fileName}.svg`)
+      //   .png()
+      //   .resize(500, 500)
+      //   .toFile(
+      //     `/tmp/${fileName}.png`,
+      //   )
+      //   // @ts-ignore
+      //   .then(function (info) {
+      //     console.log("sharp info", info);
+      //     // console log image size in megabytes
+      //     console.log(
+      //       "sharp info size",
+      //       info.size / 1000000 + "MB",
+      //     );
+      //   })
+      //   // @ts-ignore
+      //   .catch(function (err) {
+      //     console.log("sharp err", err);
+      //   });
+      const getIrys = async () => {
+        const url = "https://node1.irys.xyz";
+        const providerUrl = CLUSTER_URL;
+        const token = "solana";
+        const privateKey = privateKeySecret;
+        
+        const irys = new Irys({
+          url, // URL of the node you want to connect to
+          token, // Token used for payment
+          key: privateKey, // ETH or SOL private key
+          // config: { providerUrl: providerUrl }, // Optional provider URL, only required when using Devnet
         });
+        console.log('connection made')
+        return irys;
+      };
 
-      async function uploadImage() {
-        const imgBuffer = fs.readFileSync(`/tmp/${fileName}.png`);
-        const imgMetaplexFile = toMetaplexFile(imgBuffer, fileName);
+      // async function uploadImage(): Promise<string> {
+      //   console.log(`Step 1 - Uploading Image`);
+      //   const imgUri = await METAPLEX.storage().upload(image);
+      //   console.log(`   Image URI:`, imgUri);
+      //   return imgUri;
+      // }
 
-        const imgUri = await METAPLEX.storage().upload(imgMetaplexFile);
-        console.log(`   Image URI:`, imgUri);
+      const uploadImage = async () => {
+        const irys = await getIrys();
+        // console.log('irys', irys)
+        // write the image to the vercel tmp directory
+        fs.writeFileSync(`/tmp/${fileName}.svg`, image);
+        console.log('wrote svg file')
+        // convert the svg to png with sharp
+        await sharp(
+          `/tmp/${fileName}.svg`,
+          { density: 300 }
+        )
+          .png()
+          .toFile(`/tmp/${fileName}.png`)
+          // @ts-ignore
+          .then((data) => 
+            console.log('data', data)
+          )
+          // @ts-ignore
+          .catch((err) => console.log(err));
+     
+        console.log('wrote png file')
+        // fs.writeFileSync(`/tmp/${fileName}.png`, image_to_upload);
+        const fileToUpload = `/tmp/${fileName}.png`;
+        console.log('fileToUpload', fileToUpload)
+        const token = "solana";
+        // Get size of file
+        const { size } = await fs.promises.stat(fileToUpload);
+        // Get cost to upload "size" bytes
+        const price = await irys.getPrice(size);
+        console.log(`Uploading ${size} bytes costs ${irys.utils.fromAtomic(price)} ${token}`);
+        // Fund the node
+        await irys.fund(price);
+       
+        // Upload metadata
+        try {
+          const response = await irys.uploadFile(fileToUpload);
+          
+          console.log(`File uploaded ==> https://gateway.irys.xyz/${response.id}`);
+          return `https://gateway.irys.xyz/${response.id}`;
+        } catch (e) {
+          console.log("Error uploading file ", e);
+        }
+      };
 
-        return imgUri;
-      }
+      // const imgUri = await uploadImage();
+      // const imgUri = 'https://arweave.net/dCcyTFef-Usa4yDaWaSysVJSX_kVnV2YWOsp3Q0XrKU'
 
-      const imageURL = await uploadImage();
+      // console.log("imgUri", imgUri);
+
+      const image_url = await uploadImage();
 
       async function run() {
         const helius = new Helius(process.env.NEXT_PUBLIC_HELIUS_KEY!);
@@ -136,13 +185,13 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
             },
           ],
           externalUrl: "https://www.swissDAO.space",
-          imageUrl: imageURL,
+          imageUrl: image_url,
         });
 
         console.log(response);
         return response;
       }
-      const response = await run();
+      run();
 
 
       console.log("\nSuccessfully minted the compressed NFT!");
