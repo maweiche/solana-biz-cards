@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Logo from "../components/logo";
 
 const Page: React.FC = () => {
   const [firstName, setFirstName] = useState<string>("");
@@ -204,6 +205,7 @@ const Page: React.FC = () => {
 
   return (
     <div>
+      <Logo />
       {renderForm()}
       <svg
         id="svg-container"
@@ -381,30 +383,34 @@ const Page: React.FC = () => {
           Business Card
         </text>
         <text x="50" y="300" fill="white" fontSize="36" fontWeight="bold">
-          {firstName} {lastName}
+          {firstName ? firstName : 'First Name'} {lastName ? lastName : 'Last Name'}
         </text>
         <text x="50" y="360" fill="white" fontSize="32" fontStyle="italic">
-          {jobTitle}
+          {jobTitle ? jobTitle : 'Job Title'}
         </text>
 
         <text x="50" y="420" fill="white" fontSize="30">
-          Phone: {phone}
+          Phone: {phone ? phone : '555-555-5555'}
         </text>
 
         <text x="50" y="460" fill="white" fontSize="30">
-          Email: {email}
+          Email: {email ? email : 'builder@swissDAO.space'}
         </text>
 
         <text x="50" y="520" fill="white" fontSize="30">
-          Website: {website}
+          Website: {website ? website : 'swissDAO.space'}
         </text>
       </svg>
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        onClick={() => convertAndSubmit()}
+      <div
+        className="flex justify-center"
       >
-        Create cNFT
-      </button>
+        <button
+          className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => convertAndSubmit()}
+        >
+          Create cNFT
+        </button>
+      </div>
     </div>
   );
 };
