@@ -79,11 +79,18 @@ const Page: React.FC = () => {
     });
 
     const response_status = res.status;
+    const res_text = await JSON.parse(await res.text());
+    console.log('res_text', res_text)
+    const asset_id = res_text.assetId;
+    console.log('asset_id', asset_id)
+    const xray_url = `https://xray.helius.xyz/token/${asset_id}?network=mainnet`
     // airdrop to addy: 7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n
     // airdrop from addy: HZxkqBTnXtAYoFTg2puo9KyiNN42E8Sd2Kh1jq3vT29u
     console.log("response_status", response_status);
     if (response_status === 200) {
       console.log("business card minted");
+      // get json data from response
+      console.log("xray url", xray_url);
     } else if (response_status === 500) {
       console.log("error minting business card");
     }

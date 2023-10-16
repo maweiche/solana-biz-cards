@@ -147,62 +147,109 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       // console.log("imgUri", imgUri);
 
       const image_url = await uploadImage();
-
-      async function run() {
-        const helius = new Helius(process.env.NEXT_PUBLIC_HELIUS_KEY!);
-        const response = await helius.mintCompressedNft({
-          name: "Business Card",
-          symbol: "swissDAO",
-          owner: airdropTo,
-          description: "A business card courtesy of swissDAO",
-          attributes: [
-            {
-              trait_type: "Name",
-              value: `${firstName} ${lastName}`,
+      const url = process.env.NEXT_PUBLIC_RPC_URL!;
+      const mintCompressedNft = async () => {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
             },
-            {
-              trait_type: "Job Title",
-              value: jobTitle,
-            },
-            {
-              trait_type: "Email",
-              value: email,
-            },
-            {
-              trait_type: "Phone",
-              value: phone,
-            },
-            {
-              trait_type: "Website",
-              value: website,
-            },
-            {
-              trait_type: "Creator Address",
-              value: creatorAddress,
-            },
-          ],
-          externalUrl: "https://www.swissDAO.space",
-          imageUrl: image_url,
+            body: JSON.stringify({
+                jsonrpc: '2.0',
+                id: 'helius-test',
+                method: 'mintCompressedNft',
+                params: {
+                    name: "Business Card",
+                    symbol: 'swissDAO',
+                    owner: airdropTo,
+                    description: "A business card courtesy of swissDAO",
+                    attributes: [
+                      {
+                        trait_type: "Name",
+                        value: `${firstName} ${lastName}`,
+                      },
+                      {
+                        trait_type: "Job Title",
+                        value: jobTitle,
+                      },
+                      {
+                        trait_type: "Email",
+                        value: email,
+                      },
+                      {
+                        trait_type: "Phone",
+                        value: phone,
+                      },
+                      {
+                        trait_type: "Website",
+                        value: website,
+                      },
+                      {
+                        trait_type: "Creator Address",
+                        value: creatorAddress,
+                      },
+                    ],
+                    imageUrl:
+                        image_url,
+                    externalUrl: 'https://www.swissDAO.space',
+                    sellerFeeBasisPoints: 6900,
+                },
+            }),
         });
+        const { result } = await response.json();
+        console.log('Minted asset: ', result.assetId);
 
-        console.log("minted", response);
-        return response;
-      }
-      const response = await run();
+        return result;
+    };
 
-      
+      // async function run() {
+      //   const helius = new Helius(process.env.NEXT_PUBLIC_HELIUS_KEY!);
+      //   const response = await helius.mintCompressedNft({
+      //     name: "Business Card",
+      //     symbol: "swissDAO",
+      //     owner: airdropTo,
+      //     description: "A business card courtesy of swissDAO",
+      //     attributes: [
+      //       {
+      //         trait_type: "Name",
+      //         value: `${firstName} ${lastName}`,
+      //       },
+      //       {
+      //         trait_type: "Job Title",
+      //         value: jobTitle,
+      //       },
+      //       {
+      //         trait_type: "Email",
+      //         value: email,
+      //       },
+      //       {
+      //         trait_type: "Phone",
+      //         value: phone,
+      //       },
+      //       {
+      //         trait_type: "Website",
+      //         value: website,
+      //       },
+      //       {
+      //         trait_type: "Creator Address",
+      //         value: creatorAddress,
+      //       },
+      //     ],
+      //     externalUrl: "https://www.swissDAO.space",
+      //     imageUrl: image_url,
+      //   });
 
-      if(response) {
-      console.log("\nSuccessfully minted the compressed NFT!");
-      //   return status: success and the txSignature
+      //   console.log("minted", response);
+      //   return response;
+      // }
+      // const response = await run();
+      const response = await mintCompressedNft();
+      // when complete return a 200 response with the assetId from Helius
       return res.status(200).json({
         status: "success",
+        assetId: response.assetId,
+        transaction: response.transaction,
       });
-      } else {
-        return res.status(500).json({
-          status: "error",
-        });
-      }
     } catch (error) {
       console.log(error);
       return res.status(500).json({ status: "error" });
