@@ -196,10 +196,11 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
                 },
             }),
         });
-        const { result } = await response.json();
-        console.log('Minted asset: ', result.assetId);
+        // console.log('minted')
+        // const { result } = await response.json();
+        // console.log('Minted asset: ', result.assetId);
 
-        return result;
+        // return result;
     };
 
       // async function run() {
@@ -247,8 +248,8 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       // when complete return a 200 response with the assetId from Helius
       return res.status(200).json({
         status: "success",
-        assetId: response.assetId,
-        transaction: response.transaction,
+        // assetId: response.assetId,
+        // transaction: response.transaction,
       });
     } catch (error) {
       console.log(error);
