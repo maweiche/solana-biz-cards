@@ -148,7 +148,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
 
       const image_url = await uploadImage();
 
-      async function run() {
+    
         const helius = new Helius(process.env.NEXT_PUBLIC_HELIUS_KEY!);
         await helius.mintCompressedNft({
           name: "Business Card",
@@ -184,8 +184,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
           externalUrl: "https://www.swissDAO.space",
           imageUrl: image_url,
         });
-      }
-      run().then(() => console.log("done"));
+
 
 
       console.log("\nSuccessfully minted the compressed NFT!");
