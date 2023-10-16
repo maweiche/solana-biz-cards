@@ -1,20 +1,20 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import Logo from "../components/logo";
 import Sample from "../components/sample";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
-import { getDomainKeySync, NameRegistryState, getAllDomains, reverseLookup} from "@bonfida/spl-name-service";
+import {
+  getDomainKeySync,
+  NameRegistryState,
+  getAllDomains,
+  reverseLookup,
+} from "@bonfida/spl-name-service";
 
-const RPC = process.env.NEXT_PUBLIC_RPC_URL || clusterApiUrl("mainnet-beta");//replace with your HTTP Provider from https://www.quicknode.com/endpoints
+const RPC = process.env.NEXT_PUBLIC_RPC_URL || clusterApiUrl("mainnet-beta"); //replace with your HTTP Provider from https://www.quicknode.com/endpoints
 const SOLANA_CONNECTION = new Connection(RPC);
-async function getPublicKeyFromSolDomain(domain: string):Promise<string>{
-    const { pubkey } = await getDomainKeySync(domain);
-    const owner = (await NameRegistryState.retrieve(SOLANA_CONNECTION, pubkey)).registry.owner.toBase58();
-    console.log(`The owner of SNS Domain: ${domain} is: `,owner);
-    return owner;
-}
 
 const Page: React.FC = () => {
   const [firstName, setFirstName] = useState<string>("");
@@ -26,11 +26,27 @@ const Page: React.FC = () => {
   const [airdropTo, setAirdropTo] = useState<string>("");
   const [creatorAddress, setCreatorAddress] = useState<string>("");
 
+  const CustomToastWithLink = (url: string) => (
+    <Link href={url} target="_blank" rel="noopener noreferrer">
+      View your business card on the blockchain
+    </Link>
+  );
+
+  async function getPublicKeyFromSolDomain(domain: string): Promise<string> {
+    const { pubkey } = await getDomainKeySync(domain);
+    const owner = (
+      await NameRegistryState.retrieve(SOLANA_CONNECTION, pubkey)
+    ).registry.owner.toBase58();
+    console.log(`The owner of SNS Domain: ${domain} is: `, owner);
+    return owner;
+  }
+
   async function checkForSolanaDomain(address: string) {
     // if the airdropTo address has the last 4 characters of .sol then send it to the /namesearch endpoint and await the response, else return the airdropTo address
     if (address.slice(-4) === ".sol") {
       const solana_domain = address;
-      const solana_domain_owner = await getPublicKeyFromSolDomain(solana_domain);
+      const solana_domain_owner =
+        await getPublicKeyFromSolDomain(solana_domain);
       return solana_domain_owner;
     } else {
       return address;
@@ -68,18 +84,18 @@ const Page: React.FC = () => {
     console.log("res_text", res_text);
     const asset_id = res_text.assetId;
     console.log("asset_id", asset_id);
-    const xray_url = `cNFT minted! View here: https://xray.helius.xyz/token/${asset_id}?network=mainnet`;
+    const xray_url = `https://xray.helius.xyz/token/${asset_id}?network=mainnet`;
     if (response_status === 200) {
       console.log("business card minted");
       // get json data from response
       console.log("xray url", xray_url);
-      toast.success(`${xray_url}`, {
+      toast.success(CustomToastWithLink(xray_url), {
         position: "top-right",
         autoClose: false,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: false,
-        draggable: true,
+        draggable: false,
         progress: undefined,
         theme: "dark",
       });
@@ -241,16 +257,7 @@ const Page: React.FC = () => {
         backgroundColor: "black",
       }}
     >
-      <ToastContainer
-        position="top-right"
-        autoClose={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        theme="dark"
-      />
+      <ToastContainer />
       <Logo />
       {renderForm()}
       <div
