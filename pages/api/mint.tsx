@@ -132,13 +132,6 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
               imageUrl: image_url,
               externalUrl: "https://www.swissDAO.space",
               sellerFeeBasisPoints: 6900,
-              creators: [
-                {
-                  address: creatorAddress,
-                  verified: true,
-                  share: 100,
-                },
-              ],
             },
           }),
         });

@@ -1,10 +1,5 @@
 const Logo = () => (
-  <svg
-    id="svg-container"
-    width="640"
-    height="200"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+  <svg width="640" height="200" xmlns="http://www.w3.org/2000/svg">
     <rect width="640" height="200" fill="black" />
     <svg
       width="300"
@@ -15,90 +10,18 @@ const Logo = () => (
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <ellipse
-        cx="21.4891"
-        cy="17.6635"
-        rx="17.1912"
-        ry="17.6635"
-        fill="red"
-      />
-      <ellipse
-        cx="21.4891"
-        cy="71.0932"
-        rx="17.1912"
-        ry="17.6635"
-        fill="red"
-      />
-      <ellipse
-        cx="21.4891"
-        cy="124.528"
-        rx="17.1912"
-        ry="17.6635"
-        fill="red"
-      />
-      <ellipse
-        cx="21.4891"
-        cy="177.957"
-        rx="17.1912"
-        ry="17.6635"
-        fill="red"
-      />
-      <ellipse
-        cx="73.0633"
-        cy="44.1589"
-        rx="17.1912"
-        ry="17.6635"
-        fill="red"
-      />
-      <ellipse
-        cx="73.0633"
-        cy="97.5929"
-        rx="17.1912"
-        ry="17.6635"
-        fill="red"
-      />
-      <ellipse
-        cx="73.0633"
-        cy="151.023"
-        rx="17.1912"
-        ry="17.6635"
-        fill="red"
-      />
-      <ellipse
-        cx="124.637"
-        cy="70.6537"
-        rx="17.1912"
-        ry="17.6635"
-        fill="red"
-      />
-      <ellipse
-        cx="176.211"
-        cy="98.0324"
-        rx="17.1912"
-        ry="17.6635"
-        fill="red"
-      />
-      <ellipse
-        cx="124.637"
-        cy="124.088"
-        rx="17.1912"
-        ry="17.6635"
-        fill="red"
-      />
-      <ellipse
-        cx="21.4891"
-        cy="17.6635"
-        rx="17.1912"
-        ry="17.6635"
-        fill="red"
-      />
-      <ellipse
-        cx="21.4891"
-        cy="71.0976"
-        rx="17.1912"
-        ry="17.6635"
-        fill="red"
-      />
+      <ellipse cx="21.4891" cy="17.6635" rx="17.1912" ry="17.6635" fill="red" />
+      <ellipse cx="21.4891" cy="71.0932" rx="17.1912" ry="17.6635" fill="red" />
+      <ellipse cx="21.4891" cy="124.528" rx="17.1912" ry="17.6635" fill="red" />
+      <ellipse cx="21.4891" cy="177.957" rx="17.1912" ry="17.6635" fill="red" />
+      <ellipse cx="73.0633" cy="44.1589" rx="17.1912" ry="17.6635" fill="red" />
+      <ellipse cx="73.0633" cy="97.5929" rx="17.1912" ry="17.6635" fill="red" />
+      <ellipse cx="73.0633" cy="151.023" rx="17.1912" ry="17.6635" fill="red" />
+      <ellipse cx="124.637" cy="70.6537" rx="17.1912" ry="17.6635" fill="red" />
+      <ellipse cx="176.211" cy="98.0324" rx="17.1912" ry="17.6635" fill="red" />
+      <ellipse cx="124.637" cy="124.088" rx="17.1912" ry="17.6635" fill="red" />
+      <ellipse cx="21.4891" cy="17.6635" rx="17.1912" ry="17.6635" fill="red" />
+      <ellipse cx="21.4891" cy="71.0976" rx="17.1912" ry="17.6635" fill="red" />
       <path
         d="M6.44685 26.0535L14.6121 26.4951L15.0419 65.3547H5.23926C9.96684 53.8735 15.4722 46.3665 6.44685 26.0535Z"
         fill="red"

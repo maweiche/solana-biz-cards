@@ -13,7 +13,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <main className="min-h-screen bg-background flex flex-col items-center">
+        {/* make background black */}
+        <main
+          className="min-h-screen 
+          bg-slate-950
+          text-white
+        flex flex-col items-center"
+        >
           {children}
         </main>
       </body>
