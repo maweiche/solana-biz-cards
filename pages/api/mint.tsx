@@ -108,7 +108,6 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
         console.log('wrote svg file')
         // convert the svg to png with sharp
         const image_to_upload = fs.readFileSync(`/tmp/${fileName}.svg`);
-        console.log('size of image_to_upload', image_to_upload.length)
         await sharp(
           image_to_upload
         )
@@ -122,10 +121,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
           // @ts-ignore
           .catch((err) => console.log(err));
      
-        console.log('wrote png file')
-        // fs.writeFileSync(`/tmp/${fileName}.png`, image_to_upload);
         const fileToUpload = `/tmp/${fileName}.png`;
-        console.log('fileToUpload', fileToUpload)
         const token = "solana";
         // Get size of file
         const { size } = await fs.promises.stat(fileToUpload);
