@@ -1,15 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Helius } from "helius-sdk";
 import { v4 as uuidv4 } from "uuid";
 import Irys from "@irys/sdk";
-import { WrapperConnection } from "../../ReadApi/WrapperConnection";
-import {
-  Keypair,
-  LAMPORTS_PER_SOL,
-  clusterApiUrl,
-  PublicKey,
-} from "@solana/web3.js";
-
 export type MakeTransactionInputData = {
   account: string;
 };
@@ -19,34 +10,14 @@ export type MakeTransactionOutputData = {
   message: string;
 };
 const sharp = require("sharp");
+const fs = require("fs");
+
 async function post(req: NextApiRequest, res: NextApiResponse) {
   //Handle POST requests to issue a coupon
   if (req.method === "POST") {
     try {
-      console.log("triggered");
-      const fs = require("fs");
-
       const fileName = uuidv4();
-      console.log("wtff");
       const privateKeySecret = process.env.NEXT_PUBLIC_WALLET_PRIVATE_KEY;
-      console.log("grabbed private key");
-      // const keyfileBytes = await JSON.parse(privateKeySecret!);
-      // // parse the loaded secretKey into a valid keypair
-      // const payer = Keypair.fromSecretKey(Uint8Array.from(keyfileBytes!));
-      // console.log('payer', payer.publicKey.toBase58())
-      const CLUSTER_URL = process.env.RPC_URL || clusterApiUrl("mainnet-beta"); // provide a default value for RPC_URL
-      // create a new rpc connection, using the ReadApi wrapper
-      const connection = new WrapperConnection(CLUSTER_URL, "confirmed");
-      // const METAPLEX = Metaplex.make(connection)
-      //   .use(keypairIdentity(payer))
-      //   .use(
-      //     bundlrStorage({
-      //       address: "https://devnet.bundlr.network",
-      //       providerUrl: CLUSTER_URL,
-      //       timeout: 60000,
-      //     }),
-      //   );
-
       const {
         image,
         firstName,
@@ -58,55 +29,20 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
         airdropTo,
         creatorAddress,
       } = req.body;
-      // create tmp directory to write to on production
-      // if (!fs.existsSync("uploads")) {
-      //   fs.mkdirSync("uploads");
-      // }
 
-      // // write the svg to the tmp directory
-      // fs.writeFileSync(`/tmp/${fileName}.svg`, image);
-
-      // await sharp(`/tmp/${fileName}.svg`)
-      //   .png()
-      //   .resize(500, 500)
-      //   .toFile(
-      //     `/tmp/${fileName}.png`,
-      //   )
-      //   // @ts-ignore
-      //   .then(function (info) {
-      //     console.log("sharp info", info);
-      //     // console log image size in megabytes
-      //     console.log(
-      //       "sharp info size",
-      //       info.size / 1000000 + "MB",
-      //     );
-      //   })
-      //   // @ts-ignore
-      //   .catch(function (err) {
-      //     console.log("sharp err", err);
-      //   });
       const getIrys = async () => {
         const url = "https://node1.irys.xyz";
-        const providerUrl = CLUSTER_URL;
         const token = "solana";
         const privateKey = privateKeySecret;
 
         const irys = new Irys({
           url, // URL of the node you want to connect to
           token, // Token used for payment
-          key: privateKey, // ETH or SOL private key
+          key: privateKey, //SOL private key in base58 format
           // config: { providerUrl: providerUrl }, // Optional provider URL, only required when using Devnet
         });
-        console.log("connection made");
         return irys;
       };
-
-      // async function uploadImage(): Promise<string> {
-      //   console.log(`Step 1 - Uploading Image`);
-      //   const imgUri = await METAPLEX.storage().upload(image);
-      //   console.log(`   Image URI:`, imgUri);
-      //   return imgUri;
-      // }
 
       const uploadImage = async () => {
         const irys = await getIrys();
@@ -150,12 +86,6 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
           console.log("Error uploading file ", e);
         }
       };
-
-      // const imgUri = await uploadImage();
-      // const imgUri = 'https://arweave.net/dCcyTFef-Usa4yDaWaSysVJSX_kVnV2YWOsp3Q0XrKU'
-
-      // console.log("imgUri", imgUri);
-
       const image_url = await uploadImage();
       const url = process.env.NEXT_PUBLIC_RPC_URL!;
       const mintCompressedNft = async () => {
@@ -202,10 +132,16 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
               imageUrl: image_url,
               externalUrl: "https://www.swissDAO.space",
               sellerFeeBasisPoints: 6900,
+              creators: [
+                {
+                  address: creatorAddress,
+                  verified: true,
+                  share: 100,
+                },
+              ],
             },
           }),
         });
-        console.log("minted");
         const { result } = await response.json();
         console.log("Minted asset: ", result.assetId);
 

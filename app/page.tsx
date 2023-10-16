@@ -1,18 +1,6 @@
 "use client";
 import { useState } from "react";
-import {
-  Metaplex,
-  keypairIdentity,
-  bundlrStorage,
-  toMetaplexFile,
-} from "@metaplex-foundation/js";
-import { WrapperConnection } from "../ReadApi/WrapperConnection";
-import {
-  Keypair,
-  LAMPORTS_PER_SOL,
-  clusterApiUrl,
-  PublicKey,
-} from "@solana/web3.js";
+
 const Page: React.FC = () => {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -22,22 +10,7 @@ const Page: React.FC = () => {
   const [website, setWebsite] = useState<string>("");
   const [airdropTo, setAirdropTo] = useState<string>("");
   const [creatorAddress, setCreatorAddress] = useState<string>("");
-  const privateKeySecret = process.env.NEXT_PUBLIC_WALLET_PRIVATE_KEY;
-  // const keyfileBytes = JSON.parse(privateKey!);
-  // // parse the loaded secretKey into a valid keypair
-  // const payer = Keypair.fromSecretKey(Uint8Array.from(keyfileBytes!));
-  const CLUSTER_URL = "https://api.mainnet-beta.solana.com"; // provide a default value for RPC_URL
-  // create a new rpc connection, using the ReadApi wrapper
-  const connection = new WrapperConnection(CLUSTER_URL, "confirmed");
-  // const METAPLEX = Metaplex.make(connection)
-  //   .use(keypairIdentity(payer))
-  //   .use(
-  //     bundlrStorage({
-  //       address: "https://node1.irys.xyz",
-  //       providerUrl: CLUSTER_URL,
-  //       timeout: 60000,
-  //     }),
-  //   );
+
   async function uploadImage() {
     try {
       const image = document.getElementById("svg-container");
@@ -51,10 +24,6 @@ const Page: React.FC = () => {
   }
 
   async function convertAndSubmit() {
-    const image = document.getElementById("svg-container");
-    // convert image into a svg string
-    const svg = new XMLSerializer().serializeToString(image!);
-
     const image_file = await uploadImage();
     console.log("minting business card");
 
@@ -82,9 +51,6 @@ const Page: React.FC = () => {
     const asset_id = res_text.assetId;
     console.log("asset_id", asset_id);
     const xray_url = `https://xray.helius.xyz/token/${asset_id}?network=mainnet`;
-    // airdrop to addy: 7wK3jPMYjpZHZAghjersW6hBNMgi9VAGr75AhYRqR2n
-    // airdrop from addy: HZxkqBTnXtAYoFTg2puo9KyiNN42E8Sd2Kh1jq3vT29u
-    console.log("response_status", response_status);
     if (response_status === 200) {
       console.log("business card minted");
       // get json data from response
@@ -238,7 +204,6 @@ const Page: React.FC = () => {
 
   return (
     <div>
-      cNFT business card
       {renderForm()}
       <svg
         id="svg-container"
@@ -418,7 +383,6 @@ const Page: React.FC = () => {
         <text x="50" y="300" fill="white" fontSize="36" fontWeight="bold">
           {firstName} {lastName}
         </text>
-        {/* make job title italics */}
         <text x="50" y="360" fill="white" fontSize="32" fontStyle="italic">
           {jobTitle}
         </text>
