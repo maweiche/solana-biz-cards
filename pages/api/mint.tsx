@@ -193,7 +193,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
         console.log(response);
         return response;
       }
-      run();
+      await run();
 
 
       console.log("\nSuccessfully minted the compressed NFT!");
