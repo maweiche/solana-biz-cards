@@ -184,9 +184,6 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
           externalUrl: "https://www.swissDAO.space",
           imageUrl: image_url,
         });
-
-        console.log(response);
-        return response;
       }
       await run();
 
