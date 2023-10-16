@@ -18,14 +18,14 @@ export type MakeTransactionOutputData = {
   transaction: string;
   message: string;
 };
-
+const sharp = require("sharp");
 async function post(req: NextApiRequest, res: NextApiResponse) {
   //Handle POST requests to issue a coupon
   if (req.method === "POST") {
     try {
       console.log('triggered')
       const fs = require("fs");
-      const sharp = require("sharp");
+      
       const fileName = uuidv4();
       console.log('wtff')
       const privateKeySecret = process.env.NEXT_PUBLIC_WALLET_PRIVATE_KEY;
