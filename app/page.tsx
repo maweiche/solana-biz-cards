@@ -4,6 +4,17 @@ import Logo from "../components/logo";
 import Sample from "../components/sample";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
+import { getDomainKeySync, NameRegistryState, getAllDomains, reverseLookup} from "@bonfida/spl-name-service";
+
+const RPC = process.env.NEXT_PUBLIC_RPC_URL || clusterApiUrl("mainnet-beta");//replace with your HTTP Provider from https://www.quicknode.com/endpoints
+const SOLANA_CONNECTION = new Connection(RPC);
+async function getPublicKeyFromSolDomain(domain: string):Promise<string>{
+    const { pubkey } = await getDomainKeySync(domain);
+    const owner = (await NameRegistryState.retrieve(SOLANA_CONNECTION, pubkey)).registry.owner.toBase58();
+    console.log(`The owner of SNS Domain: ${domain} is: `,owner);
+    return owner;
+}
 
 const Page: React.FC = () => {
   const [firstName, setFirstName] = useState<string>("");
@@ -15,12 +26,25 @@ const Page: React.FC = () => {
   const [airdropTo, setAirdropTo] = useState<string>("");
   const [creatorAddress, setCreatorAddress] = useState<string>("");
 
+  async function checkForSolanaDomain(address: string) {
+    // if the airdropTo address has the last 4 characters of .sol then send it to the /namesearch endpoint and await the response, else return the airdropTo address
+    if (address.slice(-4) === ".sol") {
+      const solana_domain = address;
+      const solana_domain_owner = await getPublicKeyFromSolDomain(solana_domain);
+      return solana_domain_owner;
+    } else {
+      return address;
+    }
+  }
+
   async function convertAndSubmit() {
     const image = document.getElementById("svg-container");
     const svg = new XMLSerializer().serializeToString(image!);
 
+    console.log("checking for solana domain");
+    const airdrop_publickey = await checkForSolanaDomain(airdropTo);
+    console.log("airdrop_publickey", airdrop_publickey);
     console.log("minting business card");
-
     const res = await fetch("/api/mint", {
       method: "POST",
       headers: {
@@ -34,7 +58,7 @@ const Page: React.FC = () => {
         email: email,
         phone: phone,
         website: website,
-        airdropTo: airdropTo,
+        airdropTo: airdrop_publickey,
         creatorAddress: creatorAddress,
       }),
     });
@@ -429,7 +453,7 @@ const Page: React.FC = () => {
           </text>
         </svg>
       </div>
-      <Sample 
+      <Sample
         firstName={firstName}
         lastName={lastName}
         jobTitle={jobTitle}

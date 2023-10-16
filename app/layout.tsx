@@ -11,15 +11,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html 
-      lang="en" 
+    <html
+      lang="en"
       className="flex flex-col items-center justify-center"
-      style={{ width: "100vw", justifyContent: "center", alignContent:"center", overflowX: "hidden", backgroundColor: "black" }}
+      style={{
+        width: "100vw",
+        justifyContent: "center",
+        alignContent: "center",
+        overflowX: "hidden",
+        backgroundColor: "black",
+      }}
     >
       <body>
-        <main>
-          {children}
-        </main>
+        <main>{children}</main>
       </body>
     </html>
   );
