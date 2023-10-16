@@ -107,10 +107,12 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
         fs.writeFileSync(`/tmp/${fileName}.svg`, image);
         console.log('wrote svg file')
         // convert the svg to png with sharp
+        const image_to_upload = fs.readFileSync(`/tmp/${fileName}.svg`);
+        console.log('size of image_to_upload', image_to_upload.length)
         await sharp(
-          `/tmp/${fileName}.svg`,
-          { density: 300 }
+          image_to_upload
         )
+          .resize(500, 500)
           .png()
           .toFile(`/tmp/${fileName}.png`)
           // @ts-ignore
