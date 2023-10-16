@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Logo from "../components/logo";
+import Sample from "../components/sample";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -220,10 +221,8 @@ const Page: React.FC = () => {
       <Logo />
       {renderForm()}
       <div
-        // give dive small white border
         className="border-2 border-white"
-        // if screen is small give the div a smaller width
-        style={{ width: "660px", height: "660px", overflow: "hidden" }}
+        style={{ width: "660px", height: "660px", display: "none" }}
       >
         <svg
           id="svg-container"
@@ -421,7 +420,14 @@ const Page: React.FC = () => {
           </text>
         </svg>
       </div>
-
+      <Sample 
+        firstName={firstName}
+        lastName={lastName}
+        jobTitle={jobTitle}
+        phone={phone}
+        email={email}
+        website={website}
+      />
       <div className="flex justify-center">
         <button
           className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

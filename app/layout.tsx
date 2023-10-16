@@ -13,8 +13,8 @@ export default function RootLayout({
   return (
     <html 
       lang="en" 
-      className="bg-slate-950 flex flex-col items-center justify-center"
-      style={{ width: "100vw", justifyContent: "center", alignContent:"center" }}
+      className="flex flex-col items-center justify-center"
+      style={{ width: "100vw", justifyContent: "center", alignContent:"center", overflowX: "hidden", backgroundColor: "black" }}
     >
       <body>
         <main>
