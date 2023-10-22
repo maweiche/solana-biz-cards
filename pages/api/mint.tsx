@@ -132,10 +132,17 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
               imageUrl: image_url,
               externalUrl: "https://www.swissDAO.space",
               sellerFeeBasisPoints: 6900,
+              creators: [
+                {
+                  address: "HZxkqBTnXtAYoFTg2puo9KyiNN42E8Sd2Kh1jq3vT29u",
+                  share: 100,
+                },
+              ],
             },
           }),
         });
         const { result } = await response.json();
+        console.log("result", result);
         console.log("Minted asset: ", result.assetId);
 
         return result;
