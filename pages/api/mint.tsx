@@ -25,6 +25,8 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
         jobTitle,
         email,
         phone,
+        twitter,
+        telegram,
         website,
         airdropTo,
         creatorAddress,
@@ -114,11 +116,19 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
                 },
                 {
                   trait_type: "Email",
-                  value: email,
+                  value: email != "" ? email : "none",
                 },
                 {
                   trait_type: "Phone",
-                  value: phone,
+                  value: phone != "" ? phone : "none",
+                },
+                {
+                  trait_type: "Twitter",
+                  value: twitter != "" ? twitter : "none",
+                },
+                {
+                  trait_type: "Telegram",
+                  value: telegram != "" ? telegram : "none",
                 },
                 {
                   trait_type: "Website",
