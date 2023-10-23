@@ -3,16 +3,17 @@ import { useState } from "react";
 import Link from "next/link";
 import Logo from "../components/logo";
 import Svg from "../components/svg";
+import Svg_Style2 from "@/components/svg_style2";
+import Svg_Style3 from "@/components/svg_style3";
+import Svg_Style4 from "@/components/svg_style4";
 import Sample from "../components/sample";
+import Sample_Style2 from "@/components/sample_style2";
+import Sample_Style3 from "@/components/sample_style3";
+import Sample_Style4 from "@/components/sample_style4";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
-import {
-  getDomainKeySync,
-  NameRegistryState,
-  getAllDomains,
-  reverseLookup,
-} from "@bonfida/spl-name-service";
+import { Connection, clusterApiUrl } from "@solana/web3.js";
+import { getDomainKeySync, NameRegistryState } from "@bonfida/spl-name-service";
 import Gallery from "@/components/gallery";
 
 const RPC = process.env.NEXT_PUBLIC_RPC_URL || clusterApiUrl("mainnet-beta"); //replace with your HTTP Provider from https://www.quicknode.com/endpoints
@@ -24,10 +25,13 @@ const Page: React.FC = () => {
   const [jobTitle, setJobTitle] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
+  const [twitter, setTwitter] = useState<string>("");
+  const [telegram, setTelegram] = useState<string>("");
   const [website, setWebsite] = useState<string>("");
   const [airdropTo, setAirdropTo] = useState<string>("");
   const [creatorAddress, setCreatorAddress] = useState<string>("");
   const [showGallery, setShowGallery] = useState<boolean>(false);
+  const [selectedSvg, setSelectedSvg] = useState<string>("");
 
   const CustomToastWithLink = (url: string) => (
     <Link href={url} target="_blank" rel="noopener noreferrer">
@@ -57,7 +61,7 @@ const Page: React.FC = () => {
   }
 
   async function convertAndSubmit() {
-    const image = document.getElementById("svg-container");
+    const image = document.getElementById(selectedSvg);
     const svg = new XMLSerializer().serializeToString(image!);
 
     console.log("checking for solana domain");
@@ -143,7 +147,6 @@ const Page: React.FC = () => {
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
           />
-
           <label
             className="block text-gray-700 text-sm font-bold"
             htmlFor="jobTitle"
@@ -160,41 +163,78 @@ const Page: React.FC = () => {
             onChange={(e) => setJobTitle(e.target.value)}
           />
         </div>
-
         <div className="mb-2 sm:max-w-sm sm:mx-auto">
-          <label
-            className="block text-gray-700 text-sm font-bold"
-            htmlFor="phone"
-          >
-            Phone
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
-            // if there is no phone number give the style a red border
-            style={phone ? {} : { border: "1px solid red" }}
-            id="phone"
-            type="text"
-            placeholder="Phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
+          {selectedSvg === "svg-container" ||
+          selectedSvg === "svg-container-style2" ||
+          selectedSvg === "" ? (
+            <>
+              <label
+                className="block text-gray-700 text-sm font-bold"
+                htmlFor="phone"
+              >
+                Phone
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
+                style={phone ? {} : { border: "1px solid red" }}
+                id="phone"
+                type="text"
+                placeholder="Phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
 
-          <label
-            className="block text-gray-700 text-sm font-bold"
-            htmlFor="email"
-          >
-            Email
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
-            style={email ? {} : { border: "1px solid red" }}
-            id="email"
-            type="text"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+              <label
+                className="block text-gray-700 text-sm font-bold"
+                htmlFor="email"
+              >
+                Email
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
+                style={email ? {} : { border: "1px solid red" }}
+                id="email"
+                type="text"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </>
+          ) : (
+            <>
+              <label
+                className="block text-gray-700 text-sm font-bold"
+                htmlFor="twitter"
+              >
+                Twitter
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
+                style={twitter ? {} : { border: "1px solid red" }}
+                id="twitter"
+                type="text"
+                placeholder="Twitter"
+                value={twitter}
+                onChange={(e) => setTwitter(e.target.value)}
+              />
 
+              <label
+                className="block text-gray-700 text-sm font-bold"
+                htmlFor="telegram"
+              >
+                Telegram
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
+                style={telegram ? {} : { border: "1px solid red" }}
+                id="telegram"
+                type="text"
+                placeholder="Telegram"
+                value={telegram}
+                onChange={(e) => setTelegram(e.target.value)}
+              />
+            </>
+          )}
           <label
             className="block text-gray-700 text-sm font-bold"
             htmlFor="email"
@@ -263,14 +303,14 @@ const Page: React.FC = () => {
       <ToastContainer />
       <Logo />
       <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
         onClick={() => setShowGallery(!showGallery)}
       >
         {showGallery ? "Hide Gallery" : "Show Gallery"}
       </button>
       {showGallery && <Gallery />}
       {!showGallery && (
-        <>
+        <div className="flex flex-col gap-4 justify-center">
           {renderForm()}
           <Svg
             firstName={firstName}
@@ -280,7 +320,7 @@ const Page: React.FC = () => {
             email={email}
             website={website}
           />
-          <Sample
+          <Svg_Style2
             firstName={firstName}
             lastName={lastName}
             jobTitle={jobTitle}
@@ -288,15 +328,129 @@ const Page: React.FC = () => {
             email={email}
             website={website}
           />
-          <div className="flex justify-center">
-            <button
-              className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => convertAndSubmit()}
+          <Svg_Style3
+            firstName={firstName}
+            lastName={lastName}
+            jobTitle={jobTitle}
+            twitter={twitter}
+            telegram={telegram}
+            website={website}
+          />
+          <Svg_Style4
+            firstName={firstName}
+            lastName={lastName}
+            jobTitle={jobTitle}
+            twitter={twitter}
+            telegram={telegram}
+            website={website}
+          />
+          <div className="flex flex-row gap-4 justify-center align-center md:flex-row sm:flex-col xs:flex-col wrap">
+            <div
+              className="flex flex-col gap-4 justify-center align-center cursor-pointer"
+              style={{
+                border:
+                  selectedSvg === "svg-container" ? "1px solid yellow" : "",
+                padding: selectedSvg === "svg-container" ? "5px" : "",
+              }}
+              onClick={() => {
+                setSelectedSvg("svg-container");
+              }}
             >
-              Create cNFT
-            </button>
+              <span className="text-white font-bold">Style 1</span>
+              <Sample
+                firstName={firstName}
+                lastName={lastName}
+                jobTitle={jobTitle}
+                phone={phone}
+                email={email}
+                website={website}
+              />
+            </div>
+            <div
+              className="flex flex-col gap-4 justify-center align-center cursor-pointer"
+              style={{
+                border:
+                  selectedSvg === "svg-container-style2"
+                    ? "1px solid yellow"
+                    : "",
+                padding: selectedSvg === "svg-container-style2" ? "5px" : "",
+              }}
+              onClick={() => {
+                setSelectedSvg("svg-container-style2");
+              }}
+            >
+              <span className="text-white font-bold">Style 2</span>
+              <Sample_Style2
+                firstName={firstName}
+                lastName={lastName}
+                jobTitle={jobTitle}
+                phone={phone}
+                email={email}
+                website={website}
+              />
+            </div>
           </div>
-        </>
+          <div className="flex flex-row gap-4 justify-center align-center md:flex-row sm:flex-col xs:flex-col wrap">
+            <div className="flex flex-row gap-4 justify-center align-center md:flex-row sm:flex-col xs:flex-col wrap">
+              <div
+                className="flex flex-col gap-4 justify-center align-center cursor-pointer"
+                style={{
+                  border:
+                    selectedSvg === "svg-container-style3"
+                      ? "1px solid yellow"
+                      : "",
+                  padding: selectedSvg === "svg-container-style3" ? "5px" : "",
+                }}
+                onClick={() => {
+                  setSelectedSvg("svg-container-style3");
+                }}
+              >
+                <span className="text-white font-bold">Style 3</span>
+                <Sample_Style3
+                  firstName={firstName}
+                  lastName={lastName}
+                  jobTitle={jobTitle}
+                  twitter={twitter}
+                  telegram={telegram}
+                  website={website}
+                />
+              </div>
+              <div
+                className="flex flex-col gap-4 justify-center align-center cursor-pointer"
+                style={{
+                  border:
+                    selectedSvg === "svg-container-style4"
+                      ? "1px solid yellow"
+                      : "",
+                  padding: selectedSvg === "svg-container-style4" ? "5px" : "",
+                }}
+                onClick={() => {
+                  setSelectedSvg("svg-container-style4");
+                }}
+              >
+                <span className="text-white font-bold">Style 4</span>
+                <Sample_Style4
+                  firstName={firstName}
+                  lastName={lastName}
+                  jobTitle={jobTitle}
+                  twitter={twitter}
+                  telegram={telegram}
+                  website={website}
+                />
+              </div>
+            </div>
+          </div>
+          {selectedSvg != "" && (
+            <div className="flex justify-center">
+              <button
+                className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => convertAndSubmit()}
+              >
+                Create cNFT
+              </button>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

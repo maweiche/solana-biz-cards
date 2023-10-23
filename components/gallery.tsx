@@ -45,7 +45,9 @@ const Gallery = () => {
               <img
                 src={biz_card.content.links.image}
                 alt="business card"
-                className="border-solid border-2 border-white"
+                style={{
+                  border: "1px solid white",
+                }}
               />
             </div>
           );
