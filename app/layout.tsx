@@ -15,11 +15,13 @@ export default function RootLayout({
       lang="en"
       className="flex flex-col items-center justify-center"
       style={{
-        width: "100vw",
+        width: "60vw",
         justifyContent: "center",
         alignContent: "center",
         overflowX: "hidden",
         backgroundColor: "black",
+        alignItems: "center",
+        margin: "0 auto",
       }}
     >
       <body>

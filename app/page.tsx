@@ -113,7 +113,16 @@ const Page: React.FC = () => {
 
   const renderForm = () => {
     return (
-      <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 items-center justify-center">
+      <form className="bg-white sm:max-w-sm shadow-md rounded px-8 pt-6 pb-8 mb-4 items-center justify-center"
+        style={{
+          width: "60vw",
+          justifyContent: "center",
+          alignContent: "center",
+          overflowX: "hidden",
+          alignItems: "center",
+          margin: "0 auto",
+        }}
+      >
         <div className="mb-2 sm:max-w-sm sm:mx-auto">
           <label
             className="block text-gray-700 text-sm font-bold"
@@ -290,7 +299,6 @@ const Page: React.FC = () => {
   return (
     <div
       style={{
-        width: "100vw",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -344,7 +352,19 @@ const Page: React.FC = () => {
             telegram={telegram}
             website={website}
           />
-          <div className="flex flex-row gap-4 justify-center align-center md:flex-row sm:flex-col xs:flex-col wrap">
+          <div className="flex flex-row gap-4 justify-center align-center md:flex-row sm:flex-col xs:flex-col wrap"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              width: "90vw",
+              justifyContent: "center",
+              alignContent: "center",
+              overflowX: "hidden",
+              backgroundColor: "black",
+              alignItems: "center",
+              margin: "0 auto",
+            }}
+          >
             <div
               className="flex flex-col gap-4 justify-center align-center cursor-pointer"
               style={{
@@ -356,7 +376,7 @@ const Page: React.FC = () => {
                 setSelectedSvg("svg-container");
               }}
             >
-              <span className="text-white font-bold">Style 1</span>
+              <span className="text-white font-bold" style={{paddingLeft: "50px"}}>Style 1</span>
               <Sample
                 firstName={firstName}
                 lastName={lastName}
@@ -379,7 +399,7 @@ const Page: React.FC = () => {
                 setSelectedSvg("svg-container-style2");
               }}
             >
-              <span className="text-white font-bold">Style 2</span>
+              <span className="text-white font-bold" style={{paddingLeft: "50px"}}>Style 2</span>
               <Sample_Style2
                 firstName={firstName}
                 lastName={lastName}
@@ -390,54 +410,64 @@ const Page: React.FC = () => {
               />
             </div>
           </div>
-          <div className="flex flex-row gap-4 justify-center align-center md:flex-row sm:flex-col xs:flex-col wrap">
-            <div className="flex flex-row gap-4 justify-center align-center md:flex-row sm:flex-col xs:flex-col wrap">
-              <div
-                className="flex flex-col gap-4 justify-center align-center cursor-pointer"
-                style={{
-                  border:
-                    selectedSvg === "svg-container-style3"
-                      ? "1px solid yellow"
-                      : "",
-                  padding: selectedSvg === "svg-container-style3" ? "5px" : "",
-                }}
-                onClick={() => {
-                  setSelectedSvg("svg-container-style3");
-                }}
-              >
-                <span className="text-white font-bold">Style 3</span>
-                <Sample_Style3
-                  firstName={firstName}
-                  lastName={lastName}
-                  jobTitle={jobTitle}
-                  twitter={twitter}
-                  telegram={telegram}
-                  website={website}
-                />
-              </div>
-              <div
-                className="flex flex-col gap-4 justify-center align-center cursor-pointer"
-                style={{
-                  border:
-                    selectedSvg === "svg-container-style4"
-                      ? "1px solid yellow"
-                      : "",
-                  padding: selectedSvg === "svg-container-style4" ? "5px" : "",
-                }}
-                onClick={() => {
-                  setSelectedSvg("svg-container-style4");
-                }}
-              >
-                <span className="text-white font-bold">Style 4</span>
-                <Sample_Style4
-                  firstName={firstName}
-                  lastName={lastName}
-                  jobTitle={jobTitle}
-                  twitter={twitter}
-                  telegram={telegram}
-                  website={website}
-                />
-              </div>
+          <div className="flex flex-row gap-4 justify-center align-center md:flex-row sm:flex-col xs:flex-col wrap"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              width: "90vw",
+              justifyContent: "center",
+              alignContent: "center",
+              overflowX: "hidden",
+              backgroundColor: "black",
+              alignItems: "center",
+              margin: "0 auto",
+            }}
+          >
+            <div
+              className="flex flex-col gap-4 justify-center align-center cursor-pointer"
+              style={{
+                border:
+                  selectedSvg === "svg-container-style3"
+                    ? "1px solid yellow"
+                    : "",
+                padding: selectedSvg === "svg-container-style3" ? "5px" : "",
+              }}
+              onClick={() => {
+                setSelectedSvg("svg-container-style3");
+              }}
+            >
+              <span className="text-white font-bold" style={{paddingLeft: "50px"}}>Style 3</span>
+              <Sample_Style3
+                firstName={firstName}
+                lastName={lastName}
+                jobTitle={jobTitle}
+                twitter={twitter}
+                telegram={telegram}
+                website={website}
+              />
+            </div>
+            <div
+              className="flex flex-col gap-4 justify-center align-center cursor-pointer"
+              style={{
+                border:
+                  selectedSvg === "svg-container-style4"
+                    ? "1px solid yellow"
+                    : "",
+                padding: selectedSvg === "svg-container-style4" ? "5px" : "",
+              }}
+              onClick={() => {
+                setSelectedSvg("svg-container-style4");
+              }}
+            >
+              <span className="text-white font-bold" style={{paddingLeft: "50px"}}>Style 4</span>
+              <Sample_Style4
+                firstName={firstName}
+                lastName={lastName}
+                jobTitle={jobTitle}
+                twitter={twitter}
+                telegram={telegram}
+                website={website}
+              />
             </div>
           </div>
           {selectedSvg != "" && (
