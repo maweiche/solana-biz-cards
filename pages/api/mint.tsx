@@ -144,7 +144,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
               sellerFeeBasisPoints: 6900,
               creators: [
                 {
-                  address: "57mRn89vykGdBjeQeqfA6xzatAtfh7biv3uqPLPY1ERv",
+                  address: "4Rsq3eYnZ6ySCLyRdvV7dRkoL2a5VdNstz3RrtsWvQeE",
                   share: 100,
                 },
               ],

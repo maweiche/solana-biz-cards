@@ -31,7 +31,7 @@ const Gallery = () => {
   };
 
   useEffect(() => {
-    check_for_biz_cards("57mRn89vykGdBjeQeqfA6xzatAtfh7biv3uqPLPY1ERv");
+    check_for_biz_cards("4Rsq3eYnZ6ySCLyRdvV7dRkoL2a5VdNstz3RrtsWvQeE");
   }, []);
 
   return (
