@@ -116,19 +116,19 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
                 },
                 {
                   trait_type: "Email",
-                  value: email != "" ? email : "none",
+                  value: email || "",
                 },
                 {
                   trait_type: "Phone",
-                  value: phone != "" ? phone : "none",
+                  value: phone || "",
                 },
                 {
                   trait_type: "Twitter",
-                  value: twitter != "" ? twitter : "none",
+                  value: twitter || "",
                 },
                 {
                   trait_type: "Telegram",
-                  value: telegram != "" ? telegram : "none",
+                  value: telegram || "",
                 },
                 {
                   trait_type: "Website",
