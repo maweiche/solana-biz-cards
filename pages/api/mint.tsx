@@ -144,7 +144,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
               sellerFeeBasisPoints: 6900,
               creators: [
                 {
-                  address: "4Rsq3eYnZ6ySCLyRdvV7dRkoL2a5VdNstz3RrtsWvQeE",
+                  address: process.env.NEXT_PUBLIC_WALLET_ADDRESS,
                   share: 100,
                 },
               ],
@@ -168,16 +168,6 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       console.log(error);
       return res.status(500).json({ status: "error" });
     }
-  }
-}
-
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
-  } else if (req.method === "POST") {
-    return await post(req, res);
-  } else {
-    return res.status(405).json({ error: "Method not allowed" });
   }
 }
 
