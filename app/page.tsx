@@ -94,6 +94,16 @@ const Page: React.FC = () => {
       });
     } else if (response_status === 500) {
       console.log("error minting business card");
+      toast.error("Error minting business card", {
+        position: "top-right",
+        autoClose: false,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+      });
     }
   }
 

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 
 const Gallery = () => {
-  const [biz_cards, setBizCards] = useState<Array<any>>([]);
-  const [loading, setLoading] = useState(true);
+  const [bizCards, setBizCards] = useState<Array<any>>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
   const check_for_biz_cards = async (address: string) => {
     const url = process.env.NEXT_PUBLIC_RPC_URL;
 
@@ -16,10 +17,10 @@ const Gallery = () => {
         id: "helius-test",
         method: "getAssetsByCreator",
         params: {
-          creatorAddress: address,
-          onlyVerified: false,
+          creatorAddress: address, // Required
+          onlyVerified: false, // Optional
           page: 1, // Starts at 1
-          limit: 1000,
+          limit: 1000, // Max 1000
         },
       }),
     });
@@ -31,19 +32,19 @@ const Gallery = () => {
   };
 
   useEffect(() => {
-    check_for_biz_cards("4Rsq3eYnZ6ySCLyRdvV7dRkoL2a5VdNstz3RrtsWvQeE");
+    check_for_biz_cards(process.env.NEXT_PUBLIC_WALLET_ADDRESS!);
   }, []);
 
   return (
     <div>
       <h1>Gallery</h1>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-flow-row auto-rows-max">
         {loading ? <p>Loading...</p> : null}
-        {biz_cards.map((biz_card, index) => {
+        {bizCards.map((bizCard, index) => {
           return (
             <div key={index}>
               <img
-                src={biz_card.content.links.image}
+                src={bizCard.content.links.image}
                 alt="business card"
                 style={{
                   border: "1px solid white",
