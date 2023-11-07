@@ -1,25 +1,19 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { v4 as uuidv4 } from "uuid";
 import Irys from "@irys/sdk";
-export type MakeTransactionInputData = {
-  account: string;
-};
 
-export type MakeTransactionOutputData = {
-  transaction: string;
-  message: string;
-};
 const sharp = require("sharp");
 const fs = require("fs");
 
 async function post(req: NextApiRequest, res: NextApiResponse) {
-  //Handle POST requests to issue a coupon
   if (req.method === "POST") {
     try {
       const fileName = uuidv4();
       const privateKeySecret = process.env.NEXT_PUBLIC_WALLET_PRIVATE_KEY;
+      const url = process.env.NEXT_PUBLIC_RPC_URL!;
+      const image = req.body.image;
+      const info = JSON.parse(req.body.info);
       const {
-        image,
         firstName,
         lastName,
         jobTitle,
@@ -30,7 +24,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
         website,
         airdropTo,
         creatorAddress,
-      } = req.body;
+      } = info;
 
       const getIrys = async () => {
         const url = "https://node1.irys.xyz";
@@ -48,7 +42,6 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
 
       const uploadImage = async () => {
         const irys = await getIrys();
-        // console.log('irys', irys)
         // write the image to the vercel tmp directory
         fs.writeFileSync(`/tmp/${fileName}.svg`, image);
         console.log("wrote svg file");
@@ -89,7 +82,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
         }
       };
       const image_url = await uploadImage();
-      const url = process.env.NEXT_PUBLIC_RPC_URL!;
+
       const mintCompressedNft = async () => {
         const response = await fetch(url, {
           method: "POST",
@@ -141,7 +134,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
               ],
               imageUrl: image_url,
               externalUrl: "https://www.swissDAO.space",
-              sellerFeeBasisPoints: 6900,
+              sellerFeeBasisPoints: 10000,
               creators: [
                 {
                   address: process.env.NEXT_PUBLIC_WALLET_ADDRESS,
@@ -162,7 +155,6 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       return res.status(200).json({
         status: "success",
         assetId: response.assetId,
-        transaction: response.transaction,
       });
     } catch (error) {
       console.log(error);

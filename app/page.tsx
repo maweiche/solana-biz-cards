@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import Link from "next/link";
 import Logo from "../components/logo";
 import Svg from "../components/svg";
@@ -20,18 +21,10 @@ const RPC = process.env.NEXT_PUBLIC_RPC_URL || clusterApiUrl("mainnet-beta"); //
 const SOLANA_CONNECTION = new Connection(RPC);
 
 const Page: React.FC = () => {
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
-  const [jobTitle, setJobTitle] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [twitter, setTwitter] = useState<string>("");
-  const [telegram, setTelegram] = useState<string>("");
-  const [website, setWebsite] = useState<string>("");
-  const [airdropTo, setAirdropTo] = useState<string>("");
-  const [creatorAddress, setCreatorAddress] = useState<string>("");
+  const { register, handleSubmit } = useForm();
+  const [data, setData] = useState<string>("");
   const [showGallery, setShowGallery] = useState<boolean>(false);
-  const [selectedSvg, setSelectedSvg] = useState<string>("");
+  const [selectedSvg, setSelectedSvg] = useState<string>("svg-container");
 
   const CustomToastWithLink = (url: string) => (
     <Link href={url} target="_blank" rel="noopener noreferrer">
@@ -49,7 +42,7 @@ const Page: React.FC = () => {
   }
 
   async function checkForSolanaDomain(address: string) {
-    // if the airdropTo address has the last 4 characters of .sol then send it to the /namesearch endpoint and await the response, else return the airdropTo address
+    // if the airdropTo address has the last 4 characters of .sol then getPublicKeyFromSolDomain else return the airdropTo address
     if (address.slice(-4) === ".sol") {
       const solana_domain = address;
       const solana_domain_owner =
@@ -63,7 +56,7 @@ const Page: React.FC = () => {
   async function convertAndSubmit() {
     const image = document.getElementById(selectedSvg);
     const svg = new XMLSerializer().serializeToString(image!);
-
+    const airdropTo = JSON.parse(data).airdropTo;
     console.log("checking for solana domain");
     const airdrop_publickey = await checkForSolanaDomain(airdropTo);
     console.log("airdrop_publickey", airdrop_publickey);
@@ -74,15 +67,8 @@ const Page: React.FC = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        info: data,
         image: svg,
-        firstName: firstName,
-        lastName: lastName,
-        jobTitle: jobTitle,
-        email: email,
-        phone: phone,
-        website: website,
-        airdropTo: airdrop_publickey,
-        creatorAddress: creatorAddress,
       }),
     });
 
@@ -113,7 +99,8 @@ const Page: React.FC = () => {
 
   const renderForm = () => {
     return (
-      <form className="bg-white sm:max-w-sm shadow-md rounded px-8 pt-6 pb-8 mb-4 items-center justify-center"
+      <form
+        className="bg-white sm:max-w-sm shadow-md rounded px-8 pt-6 pb-8 mb-4 items-center justify-center"
         style={{
           width: "60vw",
           justifyContent: "center",
@@ -122,174 +109,66 @@ const Page: React.FC = () => {
           alignItems: "center",
           margin: "0 auto",
         }}
+        onChange={handleSubmit((data) => setData(JSON.stringify(data)))}
       >
         <div className="mb-2 sm:max-w-sm sm:mx-auto">
-          <label
-            className="block text-gray-700 text-sm font-bold"
-            htmlFor="firstName"
-          >
-            First Name
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight sm:max-w-sm sm:mx-auto"
-            style={firstName ? {} : { border: "1px solid red" }}
-            id="firstName"
-            type="text"
-            placeholder="First Name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-          />
-        </div>
-        <div className="mb-2 sm:max-w-sm sm:mx-auto">
-          <label
-            className="block text-gray-700 text-sm font-bold"
-            htmlFor="lastName"
-          >
-            Last Name
-          </label>
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
-            style={lastName ? {} : { border: "1px solid red" }}
-            id="lastName"
-            type="text"
-            placeholder="Last Name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
+            {...register("firstName")}
+            placeholder="First name"
           />
-          <label
-            className="block text-gray-700 text-sm font-bold"
-            htmlFor="jobTitle"
-          >
-            Job Title
-          </label>
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
-            style={jobTitle ? {} : { border: "1px solid red" }}
-            id="jobTitle"
-            type="text"
-            placeholder="Job Title"
-            value={jobTitle}
-            onChange={(e) => setJobTitle(e.target.value)}
+            {...register("lastName")}
+            placeholder="Last name"
           />
-        </div>
-        <div className="mb-2 sm:max-w-sm sm:mx-auto">
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
+            {...register("jobTitle")}
+            placeholder="Job title"
+          />
           {selectedSvg === "svg-container" ||
-          selectedSvg === "svg-container-style2" ||
-          selectedSvg === "" ? (
+          selectedSvg === "svg-container-style2" ? (
             <>
-              <label
-                className="block text-gray-700 text-sm font-bold"
-                htmlFor="phone"
-              >
-                Phone
-              </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
-                style={phone ? {} : { border: "1px solid red" }}
-                id="phone"
-                type="text"
-                placeholder="Phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-
-              <label
-                className="block text-gray-700 text-sm font-bold"
-                htmlFor="email"
-              >
-                Email
-              </label>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
-                style={email ? {} : { border: "1px solid red" }}
-                id="email"
-                type="text"
+                {...register("email")}
                 placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+              />
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
+                {...register("phone")}
+                placeholder="Phone"
               />
             </>
           ) : (
             <>
-              <label
-                className="block text-gray-700 text-sm font-bold"
-                htmlFor="twitter"
-              >
-                Twitter
-              </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
-                style={twitter ? {} : { border: "1px solid red" }}
-                id="twitter"
-                type="text"
+                {...register("twitter")}
                 placeholder="Twitter"
-                value={twitter}
-                onChange={(e) => setTwitter(e.target.value)}
               />
-
-              <label
-                className="block text-gray-700 text-sm font-bold"
-                htmlFor="telegram"
-              >
-                Telegram
-              </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
-                style={telegram ? {} : { border: "1px solid red" }}
-                id="telegram"
-                type="text"
+                {...register("telegram")}
                 placeholder="Telegram"
-                value={telegram}
-                onChange={(e) => setTelegram(e.target.value)}
               />
             </>
           )}
-          <label
-            className="block text-gray-700 text-sm font-bold"
-            htmlFor="email"
-          >
-            Website
-          </label>
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
-            style={website ? {} : { border: "1px solid red" }}
-            id="website"
-            type="text"
+            {...register("website")}
             placeholder="Website"
-            value={website}
-            onChange={(e) => setWebsite(e.target.value)}
           />
-
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="airdropTo"
-          >
-            Airdrop To
-          </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight"
-            style={airdropTo ? {} : { border: "1px solid red" }}
-            id="airdropTo"
-            type="text"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
+            {...register("airdropTo")}
             placeholder="Airdrop To"
-            value={airdropTo}
-            onChange={(e) => setAirdropTo(e.target.value)}
           />
-
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="creatorAddress"
-          >
-            Creator Address
-          </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight"
-            style={creatorAddress ? {} : { border: "1px solid red" }}
-            id="creatorAddress"
-            type="text"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight sm:max-w-sm sm:mx-auto"
+            {...register("creatorAddress")}
             placeholder="Creator Address"
-            value={creatorAddress}
-            onChange={(e) => setCreatorAddress(e.target.value)}
           />
         </div>
       </form>
@@ -321,38 +200,39 @@ const Page: React.FC = () => {
         <div className="flex flex-col gap-4 justify-center">
           {renderForm()}
           <Svg
-            firstName={firstName}
-            lastName={lastName}
-            jobTitle={jobTitle}
-            phone={phone}
-            email={email}
-            website={website}
+            firstName={data ? JSON.parse(data).firstName : ""}
+            lastName={data ? JSON.parse(data).lastName : ""}
+            jobTitle={data ? JSON.parse(data).jobTitle : ""}
+            phone={data ? JSON.parse(data).phone : ""}
+            email={data ? JSON.parse(data).email : ""}
+            website={data ? JSON.parse(data).website : ""}
           />
           <Svg_Style2
-            firstName={firstName}
-            lastName={lastName}
-            jobTitle={jobTitle}
-            phone={phone}
-            email={email}
-            website={website}
+            firstName={data ? JSON.parse(data).firstName : ""}
+            lastName={data ? JSON.parse(data).lastName : ""}
+            jobTitle={data ? JSON.parse(data).jobTitle : ""}
+            phone={data ? JSON.parse(data).phone : ""}
+            email={data ? JSON.parse(data).email : ""}
+            website={data ? JSON.parse(data).website : ""}
           />
           <Svg_Style3
-            firstName={firstName}
-            lastName={lastName}
-            jobTitle={jobTitle}
-            twitter={twitter}
-            telegram={telegram}
-            website={website}
+            firstName={data ? JSON.parse(data).firstName : ""}
+            lastName={data ? JSON.parse(data).lastName : ""}
+            jobTitle={data ? JSON.parse(data).jobTitle : ""}
+            twitter={data ? JSON.parse(data).twitter : ""}
+            telegram={data ? JSON.parse(data).telegram : ""}
+            website={data ? JSON.parse(data).website : ""}
           />
           <Svg_Style4
-            firstName={firstName}
-            lastName={lastName}
-            jobTitle={jobTitle}
-            twitter={twitter}
-            telegram={telegram}
-            website={website}
+            firstName={data ? JSON.parse(data).firstName : ""}
+            lastName={data ? JSON.parse(data).lastName : ""}
+            jobTitle={data ? JSON.parse(data).jobTitle : ""}
+            twitter={data ? JSON.parse(data).twitter : ""}
+            telegram={data ? JSON.parse(data).telegram : ""}
+            website={data ? JSON.parse(data).website : ""}
           />
-          <div className="flex flex-row gap-4 justify-center align-center md:flex-row sm:flex-col xs:flex-col wrap"
+          <div
+            className="flex flex-row gap-4 justify-center align-center md:flex-row sm:flex-col xs:flex-col wrap"
             style={{
               display: "flex",
               flexDirection: "column",
@@ -376,14 +256,19 @@ const Page: React.FC = () => {
                 setSelectedSvg("svg-container");
               }}
             >
-              <span className="text-white font-bold" style={{paddingLeft: "50px"}}>Style 1</span>
+              <span
+                className="text-white font-bold"
+                style={{ paddingLeft: "50px" }}
+              >
+                Style 1
+              </span>
               <Sample
-                firstName={firstName}
-                lastName={lastName}
-                jobTitle={jobTitle}
-                phone={phone}
-                email={email}
-                website={website}
+                firstName={data ? JSON.parse(data).firstName : ""}
+                lastName={data ? JSON.parse(data).lastName : ""}
+                jobTitle={data ? JSON.parse(data).jobTitle : ""}
+                phone={data ? JSON.parse(data).phone : ""}
+                email={data ? JSON.parse(data).email : ""}
+                website={data ? JSON.parse(data).website : ""}
               />
             </div>
             <div
@@ -399,18 +284,24 @@ const Page: React.FC = () => {
                 setSelectedSvg("svg-container-style2");
               }}
             >
-              <span className="text-white font-bold" style={{paddingLeft: "50px"}}>Style 2</span>
+              <span
+                className="text-white font-bold"
+                style={{ paddingLeft: "50px" }}
+              >
+                Style 2
+              </span>
               <Sample_Style2
-                firstName={firstName}
-                lastName={lastName}
-                jobTitle={jobTitle}
-                phone={phone}
-                email={email}
-                website={website}
+                firstName={data ? JSON.parse(data).firstName : ""}
+                lastName={data ? JSON.parse(data).lastName : ""}
+                jobTitle={data ? JSON.parse(data).jobTitle : ""}
+                phone={data ? JSON.parse(data).phone : ""}
+                email={data ? JSON.parse(data).email : ""}
+                website={data ? JSON.parse(data).website : ""}
               />
             </div>
           </div>
-          <div className="flex flex-row gap-4 justify-center align-center md:flex-row sm:flex-col xs:flex-col wrap"
+          <div
+            className="flex flex-row gap-4 justify-center align-center md:flex-row sm:flex-col xs:flex-col wrap"
             style={{
               display: "flex",
               flexDirection: "column",
@@ -436,14 +327,19 @@ const Page: React.FC = () => {
                 setSelectedSvg("svg-container-style3");
               }}
             >
-              <span className="text-white font-bold" style={{paddingLeft: "50px"}}>Style 3</span>
+              <span
+                className="text-white font-bold"
+                style={{ paddingLeft: "50px" }}
+              >
+                Style 3
+              </span>
               <Sample_Style3
-                firstName={firstName}
-                lastName={lastName}
-                jobTitle={jobTitle}
-                twitter={twitter}
-                telegram={telegram}
-                website={website}
+                firstName={data ? JSON.parse(data).firstName : ""}
+                lastName={data ? JSON.parse(data).lastName : ""}
+                jobTitle={data ? JSON.parse(data).jobTitle : ""}
+                twitter={data ? JSON.parse(data).twitter : ""}
+                telegram={data ? JSON.parse(data).telegram : ""}
+                website={data ? JSON.parse(data).website : ""}
               />
             </div>
             <div
@@ -459,14 +355,19 @@ const Page: React.FC = () => {
                 setSelectedSvg("svg-container-style4");
               }}
             >
-              <span className="text-white font-bold" style={{paddingLeft: "50px"}}>Style 4</span>
+              <span
+                className="text-white font-bold"
+                style={{ paddingLeft: "50px" }}
+              >
+                Style 4
+              </span>
               <Sample_Style4
-                firstName={firstName}
-                lastName={lastName}
-                jobTitle={jobTitle}
-                twitter={twitter}
-                telegram={telegram}
-                website={website}
+                firstName={data ? JSON.parse(data).firstName : ""}
+                lastName={data ? JSON.parse(data).lastName : ""}
+                jobTitle={data ? JSON.parse(data).jobTitle : ""}
+                twitter={data ? JSON.parse(data).twitter : ""}
+                telegram={data ? JSON.parse(data).telegram : ""}
+                website={data ? JSON.parse(data).website : ""}
               />
             </div>
           </div>
